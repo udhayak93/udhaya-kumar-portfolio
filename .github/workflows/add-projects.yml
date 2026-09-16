@@ -17,7 +17,7 @@ jobs:
       - name: Checkout portfolio
         uses: actions/checkout@v4
 
-      - name: Add CineGo and Todo projects
+      - name: Add or update CineGo and Todo projects
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -26,8 +26,25 @@ jobs:
           path = Path('index.html')
           html = path.read_text(encoding='utf-8')
 
+          todo_live_url = 'https://udhayak93.github.io/Todo_App/'
+
+          # Todo project already has the Live Demo button.
+          if todo_live_url in html:
+              print('Todo Live Demo already present. Nothing to change.')
+              raise SystemExit(0)
+
+          # If the projects were already added by an earlier workflow run,
+          # update the existing Todo card instead of exiting early.
+          old_todo_github = '<a href="https://github.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn"><i class="fa-brands fa-github"></i> Github</a>'
+          new_todo_links = '''<a href="https://udhayak93.github.io/Todo_App/" target="_blank" rel="noopener noreferrer" class="project_btn"><i class="fa-solid fa-globe"></i> Live Demo</a>
+                            <a href="https://github.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn outline_btn"><i class="fa-brands fa-github"></i> Github</a>'''
+
           if 'CineGo – Movie Ticket Booking' in html:
-              print('Projects already added. Nothing to change.')
+              if old_todo_github not in html:
+                  raise SystemExit('Existing Todo project card not found.')
+              html = html.replace(old_todo_github, new_todo_links, 1)
+              path.write_text(html, encoding='utf-8')
+              print('Todo Live Demo added to the existing project card.')
               raise SystemExit(0)
 
           cards = r'''
