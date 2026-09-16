@@ -28,13 +28,10 @@ jobs:
 
           todo_live_url = 'https://udhayak93.github.io/Todo_App/'
 
-          # Todo project already has the Live Demo button.
           if todo_live_url in html:
               print('Todo Live Demo already present. Nothing to change.')
               raise SystemExit(0)
 
-          # If the projects were already added by an earlier workflow run,
-          # update the existing Todo card instead of exiting early.
           old_todo_github = '<a href="https://github.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn"><i class="fa-brands fa-github"></i> Github</a>'
           new_todo_links = '''<a href="https://udhayak93.github.io/Todo_App/" target="_blank" rel="noopener noreferrer" class="project_btn"><i class="fa-solid fa-globe"></i> Live Demo</a>
                             <a href="https://github.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn outline_btn"><i class="fa-brands fa-github"></i> Github</a>'''
@@ -45,9 +42,8 @@ jobs:
               html = html.replace(old_todo_github, new_todo_links, 1)
               path.write_text(html, encoding='utf-8')
               print('Todo Live Demo added to the existing project card.')
-              raise SystemExit(0)
-
-          cards = r'''
+          else:
+              cards = r'''
 
             <!-- PROJECT 5 - CINEGO -->
             <div class="col-12 col-md-6 col-lg-4 project_col mb-4">
@@ -84,17 +80,17 @@ jobs:
                     </div>
                 </div>
             </div>
-          '''
+              '''
 
-          pattern = r'(<section class="row projects_section py-5" id="projects">.*?)(\n\s*</section>)'
-          match = re.search(pattern, html, flags=re.S)
-          if not match:
-              raise SystemExit('Projects section not found.')
+              pattern = r'(<section class="row projects_section py-5" id="projects">.*?)(\n\s*</section>)'
+              match = re.search(pattern, html, flags=re.S)
+              if not match:
+                  raise SystemExit('Projects section not found.')
 
-          updated = match.group(1) + cards + match.group(2)
-          html = html[:match.start()] + updated + html[match.end():]
-          path.write_text(html, encoding='utf-8')
-          print('CineGo and Todo projects added successfully.')
+              updated = match.group(1) + cards + match.group(2)
+              html = html[:match.start()] + updated + html[match.end():]
+              path.write_text(html, encoding='utf-8')
+              print('CineGo and Todo projects added successfully.')
           PY
 
       - name: Commit portfolio update
