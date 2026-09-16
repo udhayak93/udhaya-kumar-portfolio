@@ -36,8 +36,8 @@ jobs:
                             <a href="https://github.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn outline_btn"><i class="fa-brands fa-github"></i> Github</a>'''
 
           if 'CineGo – Movie Ticket Booking' in html:
-              todo_pattern = r'<a href="https://github\.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn">\s*<i class="fa-brands fa-github"></i>\s*Github</a>'
-              html, replacements = re.subn(todo_pattern, new_todo_links, html, count=1)
+              todo_pattern = r'<a\b[^>]*href="https://github\.com/udhayak93/Todo_App"[^>]*>.*?</a>'
+              html, replacements = re.subn(todo_pattern, new_todo_links, html, count=1, flags=re.S)
               if replacements != 1:
                   raise SystemExit('Existing Todo project GitHub button not found.')
               path.write_text(html, encoding='utf-8')
