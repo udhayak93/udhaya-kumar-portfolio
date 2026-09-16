@@ -32,14 +32,14 @@ jobs:
               print('Todo Live Demo already present. Nothing to change.')
               raise SystemExit(0)
 
-          old_todo_github = '<a href="https://github.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn"><i class="fa-brands fa-github"></i> Github</a>'
           new_todo_links = '''<a href="https://udhayak93.github.io/Todo_App/" target="_blank" rel="noopener noreferrer" class="project_btn"><i class="fa-solid fa-globe"></i> Live Demo</a>
                             <a href="https://github.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn outline_btn"><i class="fa-brands fa-github"></i> Github</a>'''
 
           if 'CineGo – Movie Ticket Booking' in html:
-              if old_todo_github not in html:
-                  raise SystemExit('Existing Todo project card not found.')
-              html = html.replace(old_todo_github, new_todo_links, 1)
+              todo_pattern = r'<a href="https://github\.com/udhayak93/Todo_App" target="_blank" rel="noopener noreferrer" class="project_btn">\s*<i class="fa-brands fa-github"></i>\s*Github</a>'
+              html, replacements = re.subn(todo_pattern, new_todo_links, html, count=1)
+              if replacements != 1:
+                  raise SystemExit('Existing Todo project GitHub button not found.')
               path.write_text(html, encoding='utf-8')
               print('Todo Live Demo added to the existing project card.')
           else:
